@@ -1,0 +1,14 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@foreach (var item in ViewBag.Users)
+{
+    <h2>
+        Id: @item.Id
+        Имя: @item.Name
+    </h2>
+}
+
+
+
