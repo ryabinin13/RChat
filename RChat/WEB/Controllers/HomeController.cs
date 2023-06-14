@@ -1,19 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using RChat.BLL.Interfaces;
-using RChat.DAL.Interfaces;
-using RChat.DAL.Repositories;
 using RChat.Mappers;
 using RChat.WEB.Models;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace RChat.WEB.Controllers
 {
-    public class HomeController : Controller
+    [ApiController]
+    [Route("[controller]")]
+    public class HomeController : ControllerBase
     {
-        //private IUserRepository userRepository;
 
         private IUserService userService;
 
@@ -21,48 +17,61 @@ namespace RChat.WEB.Controllers
         {
             userService = _userService;
         }
-        public IActionResult Index()
+
+
+        [Route ("All")]
+        [HttpGet]
+        public List<UserModel> All()
         {
-            return View();
-        }
-        public IActionResult All()
-        {
-            ViewBag.Users = userService.GetAllUser().MapUserListDtoToModel();
-            return View();
+            return userService.GetAllUser().MapUserListDtoToModel();
         }
 
+
+
+        [Route ("Find")]
+        [HttpGet]
         public IActionResult Find(string login)
         {
-            ViewBag.User = userService.FindUser(login).MapUserDtoToModel();
-            return View();
-
+            return new ObjectResult(userService.FindUser(login).MapUserDtoToModel());
         }
 
-        [HttpGet]
-        public IActionResult Registration()
-        {
-            return View();
-        }
+
+
+        [Route("Registration")]
         [HttpPost]
-        public void Registration(UserModel userModel)
+        public void Registration([FromBody] UserModel userModel)
         {
             userService.Registration(userModel.MapUserModelToDto());
         }
+
+
+
+        [Route("Autorization")]
         [HttpGet]
-        public IActionResult Autorization()
-        {
-            return View();
-        }
-        [HttpPost]
         public IActionResult Autorization(string login, string password)
         {
             if (userService.Authorization(login, password))
             {
-                return View("../Main/Menu");
+                return Content("авторизован");
             }
             return Content("неавторизован");
         }
+        
 
+
+        [Route("AddChat")]
+        [HttpPost]
+        public void AddChat([FromBody] ChatModel chatModel, int id)
+        {
+            userService.CreateChat(chatModel.MapChatModelToDto(), id);
+        }
+
+        [Route("FindId")]
+        [HttpGet]
+        public IActionResult FindId(int id)
+        {
+            return new ObjectResult(userService.FindUserId(id).MapUserDtoToModel());
+        }
 
     }
 }

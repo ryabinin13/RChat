@@ -7,18 +7,8 @@ namespace RChat.WEB.Models
 {
     public class ChatModel
     {
-        public ChatModel()
-        {
-
-        }
-        public ChatModel(int id, string name, List<UserModel> userModels = null)
-        {
-            Id = id;
-            Name = name;
-            UserModels = userModels;
-        }
-        public int Id { get; set; }
+        public int ChatId { get; set; }
         public string Name { get; set; }
-        public List<UserModel> UserModels { get; set; }
+        public List<UserModel> UserModels { get; set; } = new List<UserModel>();
     }
 }

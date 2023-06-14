@@ -1,9 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RChat.DAL.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace RChat.DAL.Context
 {
@@ -15,9 +11,15 @@ namespace RChat.DAL.Context
         {
             Database.EnsureCreated();
         }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<UserEntity>().HasKey(u => u.UserId);
+            //modelBuilder.Entity<UserEntity>().HasAlternateKey(u => u.Login);
+            modelBuilder.Entity<ChatEntity>().HasKey(c => c.ChatId);
+        }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=RChat;Username=postgres;Password=stud");
+            optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=RCHAT;Username=postgres;Password=stud");
         }
     }
 }

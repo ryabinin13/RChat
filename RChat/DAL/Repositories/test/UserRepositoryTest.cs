@@ -18,7 +18,7 @@ namespace RChat.DAL.Repositories
         {
             foreach (var user in Users)
             {
-                if (user.Id == item.Id)
+                if (user.UserId == item.UserId)
                 {
                     throw new Exception("id не может совпадать");
                 }
@@ -35,7 +35,7 @@ namespace RChat.DAL.Repositories
         {
             foreach (var item in Users)
             {
-                if (id == item.Id)
+                if (id == item.UserId)
                 {
                     return item;
                 }

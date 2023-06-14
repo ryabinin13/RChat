@@ -1,10 +1,7 @@
 ﻿using RChat.BLL.Dto;
 using RChat.DAL.Entities;
 using RChat.WEB.Models;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace RChat.Mappers
 {
@@ -15,29 +12,63 @@ namespace RChat.Mappers
             if (userEntity == null)
                 return null;
 
-            return new UserDto(userEntity.Id, userEntity.Name, userEntity.Login, userEntity.Password);
+            return new UserDto()
+            {
+                UserId = userEntity.UserId, Name = userEntity.Name, Login = userEntity.Login, Password = userEntity.Password,
+            };
         }
         public static UserModel MapUserDtoToModel(this UserDto userDto)
         {
             if (userDto == null)
                 return null;
 
-            return new UserModel(userDto.Id, userDto.Name, userDto.Login, userDto.Password);            
+            return new UserModel()
+            { 
+                UserId = userDto.UserId, Name = userDto.Name, Login = userDto.Login, Password = userDto.Password 
+            };            
+        }
+        
+        public static UserDto MapUserModelToDto(this UserModel userModel)
+        {
+            if (userModel == null)
+                return null;
+
+            return new UserDto()
+            { 
+                UserId = userModel.UserId, Name = userModel.Name, Login = userModel.Login, Password = userModel.Password
+            };
         }
         public static UserEntity MapUserDtoToEntity(this UserDto userDto)
         {
             if (userDto == null)
                 return null;
 
-            return new UserEntity(userDto.Id, userDto.Name,  userDto.Login, userDto.Password);         
+            return new UserEntity()
+            {
+                UserId = userDto.UserId, Name = userDto.Name, Login = userDto.Login, Password = userDto.Password
+            };
         }
-        public static UserDto MapUserModelToDto(this UserModel userModel)
+        public static ChatEntity MapChatDtoToEntity(this ChatDto chatDto)
         {
-            if (userModel == null)
+            if (chatDto == null)
                 return null;
 
-            return new UserDto(userModel.Id, userModel.Name, userModel.Login, userModel.Password);
+            return new ChatEntity()
+            {
+               ChatId = chatDto.ChatId, Name = chatDto.Name
+            };
         }
+        public static ChatDto MapChatModelToDto(this ChatModel chatModel)
+        {
+            if (chatModel == null)
+                return null;
+
+            return new ChatDto()
+            {
+               ChatId = chatModel.ChatId, Name = chatModel.Name
+            };
+        }
+
         public static List<UserDto> MapUserListEntityToDto(this List<UserEntity> userEntities)
         {
             List<UserDto> userDtos = new List<UserDto>();

@@ -10,7 +10,6 @@ namespace RChat.DAL.Repositories
 {
     public class UserRepository : IUserRepository
     {
-
         public void Create(UserEntity item)
         {
             using (RChatContext rc = new RChatContext())
@@ -44,6 +43,14 @@ namespace RChat.DAL.Repositories
         public void Update(UserEntity item)
         {
             throw new NotImplementedException();
+        }
+
+        public UserEntity GetId(int id)
+        {
+            using (RChatContext rc = new RChatContext())
+            {
+                return rc.Users.Find(id);
+            }
         }
     }
 }

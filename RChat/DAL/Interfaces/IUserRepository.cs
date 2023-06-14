@@ -1,8 +1,5 @@
 ﻿using RChat.DAL.Entities;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace RChat.DAL.Interfaces
 {
@@ -10,6 +7,7 @@ namespace RChat.DAL.Interfaces
     {
         List<UserEntity> GetAll();
         UserEntity Get(string login);
+        UserEntity GetId(int id);
         void Create(UserEntity item);
         void Delete(int id);
         void Update(UserEntity item);
