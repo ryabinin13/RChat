@@ -65,7 +65,7 @@ namespace RChat.Mappers
 
             return new ChatDto()
             {
-               ChatId = chatModel.ChatId, Name = chatModel.Name
+                ChatId = chatModel.ChatId, Name = chatModel.Name, UsersId = chatModel.UsersId
             };
         }
 

@@ -10,13 +10,16 @@ namespace RChat.DAL.Repositories
 {
     public class UserRepository : IUserRepository
     {
-        public void Create(UserEntity item)
+        private RChatContext rc;
+
+        public UserRepository(RChatContext rChatContext)
         {
-            using (RChatContext rc = new RChatContext())
-            {
-                rc.Users.Add(item);
-                rc.SaveChanges();
-            }
+            rc = rChatContext;
+        }
+        public void Create(UserEntity item)
+        {            
+            rc.Users.Add(item);
+            rc.SaveChanges();          
         }
 
         public void Delete(int id)
@@ -26,18 +29,16 @@ namespace RChat.DAL.Repositories
 
         public UserEntity Get(string login)
         {
-            using (RChatContext rc = new RChatContext())
-            {
-                return rc.Users.Find(login);
-            }
+            
+            return rc.Users.Find(login);
+            
         }
 
         public List<UserEntity> GetAll()
         {
-            using (RChatContext rc = new RChatContext())
-            {
-                return rc.Users.ToList();
-            }
+            
+            return rc.Users.ToList();
+            
         }
 
         public void Update(UserEntity item)
@@ -47,10 +48,9 @@ namespace RChat.DAL.Repositories
 
         public UserEntity GetId(int id)
         {
-            using (RChatContext rc = new RChatContext())
-            {
-                return rc.Users.Find(id);
-            }
+            
+            return rc.Users.Find(id);
+            
         }
     }
 }

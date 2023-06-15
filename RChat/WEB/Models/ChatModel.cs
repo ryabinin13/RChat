@@ -9,6 +9,8 @@ namespace RChat.WEB.Models
     {
         public int ChatId { get; set; }
         public string Name { get; set; }
-        public List<UserModel> UserModels { get; set; } = new List<UserModel>();
+        //public List<UserModel> UserModels { get; set; } = new List<UserModel>();
+
+        public List<int> UsersId { get; set; } = new List<int>();
     }
 }

@@ -5,6 +5,9 @@ namespace RChat.DAL.Context
 {
     public class RChatContext : DbContext
     {
+        public RChatContext(DbContextOptions<RChatContext> options) : base(options)
+        {
+        }
         public DbSet<UserEntity> Users { get; set; }
         public DbSet<ChatEntity> Chats { get; set; }
         public RChatContext()
@@ -17,9 +20,9 @@ namespace RChat.DAL.Context
             //modelBuilder.Entity<UserEntity>().HasAlternateKey(u => u.Login);
             modelBuilder.Entity<ChatEntity>().HasKey(c => c.ChatId);
         }
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=RCHAT;Username=postgres;Password=stud");
-        }
+        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //{
+        //    optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=RCHAT;Username=postgres;Password=stud");
+        //}
     }
 }

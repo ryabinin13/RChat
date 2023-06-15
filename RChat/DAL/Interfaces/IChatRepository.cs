@@ -7,7 +7,7 @@ namespace RChat.DAL.Interfaces
     {
         List<ChatEntity> GetAll();
         ChatEntity Get(int id);
-        void Create(ChatEntity chatEntity, UserEntity userEntity);
+        void Create(ChatEntity chatEntity);
         void Delete(int id);
         void Update(ChatEntity item);
 

@@ -1,4 +1,5 @@
-﻿using RChat.DAL.Context;
+﻿using Microsoft.EntityFrameworkCore;
+using RChat.DAL.Context;
 using RChat.DAL.Entities;
 using RChat.DAL.Interfaces;
 using System;
@@ -10,63 +11,60 @@ namespace RChat.DAL.Repositories
 {
     public class ChatRepository : IChatRepository
     {
-        public void Create(ChatEntity chatEntity, UserEntity userEntity)
+
+        private RChatContext rc;
+
+        public ChatRepository(RChatContext rChatContext)
         {
-            using (RChatContext rc = new RChatContext())
-            {
-                chatEntity.UserEntities.Add(userEntity);
-                rc.Chats.Add(chatEntity);
-                rc.SaveChanges();
-            }
+            rc = rChatContext;
+        }
+
+        public void Create(ChatEntity chatEntity)
+        {
+            rc.Chats.Add(chatEntity);
+            rc.SaveChanges();           
         }
 
         public void Delete(int id)
         {
-            using (RChatContext rc = new RChatContext())
-            {
-                ChatEntity chatEntity = rc.Chats.Find(id);
-                rc.Chats.Remove(chatEntity);
-                rc.SaveChanges();
-            }
+           
+            ChatEntity chatEntity = rc.Chats.Find(id);
+            rc.Chats.Remove(chatEntity);
+            rc.SaveChanges();
+            
         }
 
         public ChatEntity Get(int id)
         {
-            using (RChatContext rc = new RChatContext())
-            {
-                return rc.Chats.Find(id);
-            }
+            return rc.Chats.Include(c => c.UserEntities).First(c => c.ChatId == id);        
         }
 
         public List<ChatEntity> GetAll()
         {
-            using (RChatContext rc = new RChatContext())
-            {
-                return rc.Chats.ToList();
-            }
+            
+            return rc.Chats.ToList();
+            
         }
 
         public void Update(ChatEntity item)
         {
-            using (RChatContext rc = new RChatContext())
-            {
-                ChatEntity chatEntity = rc.Chats.Find(item.ChatId);
-                chatEntity = item;
-            }
+
+            rc.Chats.Update(item);
+            rc.SaveChanges();
+            
         }
 
         public void CreateUserInChat(ChatEntity chatEntity, UserEntity userEntity)
         {
-            using (RChatContext rc = new RChatContext())
+            
+            if (chatEntity.UserEntities == null)
             {
-                if (chatEntity.UserEntities == null)
-                {
-                    chatEntity.UserEntities = new List<UserEntity>();
-                }
-                chatEntity.UserEntities.Add(userEntity);
-
-                rc.SaveChanges();
+                chatEntity.UserEntities = new List<UserEntity>();
             }
+            chatEntity.UserEntities.Add(userEntity);
+
+            rc.SaveChanges();
+            
         }
     }
 }

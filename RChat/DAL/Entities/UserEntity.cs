@@ -9,6 +9,6 @@ namespace RChat.DAL.Entities
         public string Name { get; set; }
         public string Login { get; set; }
         public string Password { get; set; }
-        public List<ChatEntity> ChatEntities { get; set; } = new List<ChatEntity>();
+        public List<ChatEntity> ChatEntities { get; set; }// = new List<ChatEntity>();
     }
 }

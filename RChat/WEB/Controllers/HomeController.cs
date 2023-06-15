@@ -26,15 +26,12 @@ namespace RChat.WEB.Controllers
             return userService.GetAllUser().MapUserListDtoToModel();
         }
 
-
-
         [Route ("Find")]
         [HttpGet]
         public IActionResult Find(string login)
         {
             return new ObjectResult(userService.FindUser(login).MapUserDtoToModel());
         }
-
 
 
         [Route("Registration")]
@@ -61,16 +58,40 @@ namespace RChat.WEB.Controllers
 
         [Route("AddChat")]
         [HttpPost]
-        public void AddChat([FromBody] ChatModel chatModel, int id)
+        public void AddChat([FromBody] ChatModel chatModel)
         {
-            userService.CreateChat(chatModel.MapChatModelToDto(), id);
+            userService.CreateChat(chatModel.MapChatModelToDto());
         }
+
+
+        [Route("DeleteChat")]
+        [HttpDelete]
+        public void DeleteChat(int id)
+        {
+            userService.DeleteChat(id);
+        }
+
+
 
         [Route("FindId")]
         [HttpGet]
         public IActionResult FindId(int id)
         {
             return new ObjectResult(userService.FindUserId(id).MapUserDtoToModel());
+        }
+
+        [Route("AddUser")]
+        [HttpPost]
+        public void AddUser(int userId, int chatId)
+        {
+            userService.AddUser(userId, chatId);
+        }
+
+        [Route("DeleteUser")]
+        [HttpPost]
+        public void DeleteUser(int userId, int chatId)
+        {
+            userService.DeleteUser(userId, chatId);
         }
 
     }

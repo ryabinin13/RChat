@@ -1,5 +1,6 @@
 ﻿using RChat.BLL.Dto;
 using RChat.BLL.Interfaces;
+using RChat.DAL.Entities;
 using RChat.DAL.Interfaces;
 using RChat.Mappers;
 using System;
@@ -22,7 +23,11 @@ namespace RChat.BLL.Services
 
         public void AddUser(int userId, int chatId)
         {
-            throw new NotImplementedException();
+            UserEntity userEntity = userRepository.GetId(userId);
+            ChatEntity chatEntity = chatRepository.Get(chatId);
+
+            chatEntity.UserEntities.Add(userEntity);
+            chatRepository.Update(chatEntity);
         }
 
         public bool Authorization(string password, string login)
@@ -38,35 +43,25 @@ namespace RChat.BLL.Services
         }
 
         //Метод с ошибкой
-        public void CreateChat(ChatDto chatDto, int id)
+        public void CreateChat(ChatDto chatDto)
         {
-            var userDto = userRepository.GetId(id).MapUserEntityToDto();
+            List<UserEntity> userEntities = new List<UserEntity>();
+            foreach (var item in chatDto.UsersId)
+            {
+                userEntities.Add(userRepository.GetId(item));
+            }
 
-            chatRepository.Create(chatDto.MapChatDtoToEntity(), userDto.MapUserDtoToEntity());
+            var chat = chatDto.MapChatDtoToEntity();
 
+            chat.UserEntities = userEntities;
 
+            chatRepository.Create(chat);
 
-            //var userEntity = userRepository.GetId(id);
-
-            //chatRepository.CreateUserInChat(chatEntity, userEntity);
-
-            //var userEntity = userDto.MapUserDtoToEntity();
-            //var chatEntity = chatDto.MapChatDtoToEntity();
-
-            //chatEntity.UserEntities = new List<DAL.Entities.UserEntity>() { userEntity };
-
-            //chatRepository.Create(chatEntity);
-
-            //UserDto user = userRepository.Get(loginUser).MapUserEntityToDto();
-
-            //user.ChatDtos.Add(chatDto);
-
-            //userRepository.Update(user.MapUserDtoToEntity());
         }
 
         public void DeleteChat(int id)
         {
-            throw new NotImplementedException();
+            chatRepository.Delete(id);
         }
 
         public void DeleteMessage(int id)
@@ -97,6 +92,15 @@ namespace RChat.BLL.Services
         public UserDto FindUserId(int id)
         {
             return userRepository.GetId(id).MapUserEntityToDto();
+        }
+
+        public void DeleteUser(int userId, int chatId)
+        {
+            UserEntity userEntity = userRepository.GetId(userId);
+            ChatEntity chatEntity = chatRepository.Get(chatId);
+
+            chatEntity.UserEntities.Remove(userEntity);
+            chatRepository.Update(chatEntity);
         }
     }
 }
