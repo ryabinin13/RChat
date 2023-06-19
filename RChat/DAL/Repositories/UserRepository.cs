@@ -43,7 +43,8 @@ namespace RChat.DAL.Repositories
 
         public void Update(UserEntity item)
         {
-            throw new NotImplementedException();
+            rc.Users.Update(item);
+            rc.SaveChanges();
         }
 
         public UserEntity GetId(int id)

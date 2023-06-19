@@ -14,11 +14,13 @@ namespace RChat.BLL.Services
     {
         private IUserRepository userRepository;
         private IChatRepository chatRepository;
+        private IMessageRepository messageRepository;
 
-        public UserService(IUserRepository _userRepository, IChatRepository _chatRepository)
+        public UserService(IUserRepository _userRepository, IChatRepository _chatRepository, IMessageRepository _messageRepository)
         {
             userRepository = _userRepository;
             chatRepository = _chatRepository;
+            messageRepository = _messageRepository;
         }
 
         public void AddUser(int userId, int chatId)
@@ -42,7 +44,7 @@ namespace RChat.BLL.Services
             return false;
         }
 
-        //Метод с ошибкой
+       
         public void CreateChat(ChatDto chatDto)
         {
             List<UserEntity> userEntities = new List<UserEntity>();
@@ -79,9 +81,21 @@ namespace RChat.BLL.Services
             userRepository.Create(userDto.MapUserDtoToEntity());
         }
 
-        public void SendMessage(string message)
+        int i = 0;
+        public void SendMessage(int userId, int chatId, string message)
         {
-            throw new NotImplementedException();
+            i++;
+            var userEntity = userRepository.GetId(userId);
+            var chatEntity = chatRepository.Get(chatId);
+
+            MessageEntity messageEntity = new MessageEntity()
+            {
+                ChatEntity = chatEntity,
+                UserEntity = userEntity,
+                Text = message,
+                MessageId = i
+            };
+            messageRepository.Create(messageEntity);
         }
 
         public UserDto FindUser(string login)

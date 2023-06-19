@@ -8,5 +8,7 @@ namespace RChat.DAL.Entities
         public int ChatId { get; set; }
         public string Name { get; set; }
         public List<UserEntity> UserEntities { get; set; }// = new List<UserEntity>();
+        public List<MessageEntity> MessageEntities { get; set; }
+
     }
 }

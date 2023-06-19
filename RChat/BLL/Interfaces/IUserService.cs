@@ -5,7 +5,7 @@ namespace RChat.BLL.Interfaces
 {
     public interface IUserService
     {
-        public void SendMessage(string message);
+        public void SendMessage(int userId, int chatId, string message);
         public void DeleteMessage(int id);
         public void Registration(UserDto userDto);
         public bool Authorization(string password, string login);

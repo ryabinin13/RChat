@@ -30,6 +30,7 @@ namespace RChat
             //services.AddTransient<IUserRepository, UserRepositoryTest>();
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<IChatRepository, ChatRepository>();
+            services.AddTransient<IMessageRepository, MessageRepository>();
             services.AddTransient<IUserService, UserService>();
 
             services.AddDbContext<RChatContext>(options =>

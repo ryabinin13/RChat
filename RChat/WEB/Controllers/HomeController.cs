@@ -93,6 +93,12 @@ namespace RChat.WEB.Controllers
         {
             userService.DeleteUser(userId, chatId);
         }
+        [Route("SendMessage")]
+        [HttpPost]
+        public void SendMessage(int userId, int chatId, string message)
+        {
+            userService.SendMessage(userId, chatId, message);
+        }
 
     }
 }
