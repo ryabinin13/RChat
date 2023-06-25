@@ -1,11 +1,15 @@
-﻿using RChat.BLL.Dto;
+﻿using Microsoft.IdentityModel.Tokens;
+using RChat.BLL.Dto;
 using RChat.BLL.Interfaces;
 using RChat.DAL.Entities;
 using RChat.DAL.Interfaces;
 using RChat.Mappers;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace RChat.BLL.Services
@@ -32,19 +36,22 @@ namespace RChat.BLL.Services
             chatRepository.Update(chatEntity);
         }
 
+       
+
+        
         public bool Authorization(string password, string login)
         {
             UserDto user = userRepository.Get(login).MapUserEntityToDto();
             if (user == null)
                 return false;
 
-            if (user.Password == password)            
+            if (user.Password == password)
                 return true;
-            
+
             return false;
         }
 
-       
+
         public void CreateChat(ChatDto chatDto)
         {
             List<UserEntity> userEntities = new List<UserEntity>();

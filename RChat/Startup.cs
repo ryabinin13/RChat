@@ -1,16 +1,18 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using RChat.BLL.Interfaces;
 using RChat.BLL.Services;
 using RChat.DAL.Context;
 using RChat.DAL.Interfaces;
 using RChat.DAL.Repositories;
-
-
+using RChat.WEB.Tokens;
+using System.Text;
 
 namespace RChat
 {
@@ -36,6 +38,24 @@ namespace RChat
             services.AddDbContext<RChatContext>(options =>
      options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
 
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
+            {
+                options.RequireHttpsMetadata = false;
+                options.SaveToken = true;
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration["Jwt:Key"])),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                };
+            });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -46,9 +66,15 @@ namespace RChat
                 app.UseDeveloperExceptionPage();
 
             }
+            app.UseDeveloperExceptionPage();//
+
+            app.UseDefaultFiles();//
 
             app.UseRouting();
             app.UseStaticFiles();
+
+            app.UseAuthentication();//
+            app.UseAuthorization();//
 
             app.UseEndpoints(endpoints =>
             {

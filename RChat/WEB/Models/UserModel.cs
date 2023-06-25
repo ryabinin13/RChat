@@ -12,5 +12,7 @@ namespace RChat.WEB.Models
         public string Login { get; set; }
         public string Password { get; set; }
         public List<ChatModel> ChatModels { get; set; } = new List<ChatModel>();
+
+
     }
 }

@@ -1,4 +1,5 @@
-﻿using RChat.DAL.Context;
+﻿using Microsoft.EntityFrameworkCore;
+using RChat.DAL.Context;
 using RChat.DAL.Entities;
 using RChat.DAL.Interfaces;
 using System;
@@ -30,8 +31,8 @@ namespace RChat.DAL.Repositories
         public UserEntity Get(string login)
         {
             
-            return rc.Users.Find(login);
-            
+            return rc.Users.SingleOrDefault(u => u.Login == login);
+
         }
 
         public List<UserEntity> GetAll()
@@ -50,7 +51,8 @@ namespace RChat.DAL.Repositories
         public UserEntity GetId(int id)
         {
             
-            return rc.Users.Find(id);
+            return rc.Users.Include(c => c.ChatEntities).First(c => c.UserId == id);
+            //return rc.Users.Find(id);
             
         }
     }

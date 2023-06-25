@@ -16,5 +16,6 @@ namespace RChat.BLL.Interfaces
         public UserDto FindUser(string login);
         public List<UserDto> GetAllUser();
         public UserDto FindUserId(int id);
+
     }
 }

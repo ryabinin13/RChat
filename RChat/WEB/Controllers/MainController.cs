@@ -1,12 +1,79 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using RChat.BLL.Interfaces;
+using RChat.Mappers;
+using RChat.WEB.Models;
+using System.Collections.Generic;
 
 namespace RChat.WEB.Controllers
 {
-    public class MainController : Controller
+    [ApiController]
+    [Route("[controller]")]
+    public class MainController : ControllerBase
     {
-        public IActionResult Menu()
+        private IUserService userService;
+
+        public MainController(IUserService _userService)
         {
-            return View();
+            userService = _userService;
+        }
+
+        [Route("All")]
+        [HttpGet]
+        public List<UserModel> All()
+        {
+            return userService.GetAllUser().MapUserListDtoToModel();
+        }
+
+        [Authorize]
+        [Route("Find")]
+        [HttpGet]
+        public IActionResult Find(string login)
+        {
+            return new ObjectResult(userService.FindUser(login).MapUserDtoToModel());
+        }
+
+
+        [Route("AddChat")]
+        [HttpPost]
+        public void AddChat([FromBody] ChatModel chatModel)
+        {
+            userService.CreateChat(chatModel.MapChatModelToDto());
+        }
+
+
+        [Route("DeleteChat")]
+        [HttpDelete]
+        public void DeleteChat(int id)
+        {
+            userService.DeleteChat(id);
+        }
+
+        [Route("FindId")]
+        [HttpGet]
+        public IActionResult FindId(int id)
+        {
+            return new ObjectResult(userService.FindUserId(id).MapUserDtoToModel());
+        }
+
+        [Route("AddUser")]
+        [HttpPost]
+        public void AddUser(int userId, int chatId)
+        {
+            userService.AddUser(userId, chatId);
+        }
+
+        [Route("DeleteUser")]
+        [HttpPost]
+        public void DeleteUser(int userId, int chatId)
+        {
+            userService.DeleteUser(userId, chatId);
+        }
+        [Route("SendMessage")]
+        [HttpPost]
+        public void SendMessage(int userId, int chatId, string message)
+        {
+            userService.SendMessage(userId, chatId, message);
         }
     }
 }

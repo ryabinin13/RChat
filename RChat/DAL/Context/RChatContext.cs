@@ -18,7 +18,7 @@ namespace RChat.DAL.Context
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<UserEntity>().HasKey(u => u.UserId);
-            //modelBuilder.Entity<UserEntity>().HasAlternateKey(u => u.Login);
+            modelBuilder.Entity<UserEntity>().HasAlternateKey(u => u.Login);
             modelBuilder.Entity<ChatEntity>().HasKey(c => c.ChatId);
             modelBuilder.Entity<MessageEntity>().HasKey(v => v.MessageId);
         }

@@ -9,5 +9,7 @@ namespace RChat.BLL.Dto
         public string Login { get; set; }
         public string Password { get; set; }
         public List<ChatDto> ChatDtos { get; set; } = new List<ChatDto>();
+
+        public string Role { get; set; }//
     }
 }
