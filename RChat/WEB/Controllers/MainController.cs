@@ -18,6 +18,7 @@ namespace RChat.WEB.Controllers
             userService = _userService;
         }
 
+        [Authorize]
         [Route("All")]
         [HttpGet]
         public List<UserModel> All()

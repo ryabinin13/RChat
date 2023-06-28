@@ -40,32 +40,10 @@ namespace RChat.WEB.Controllers
             if (userService.Authorization(login, password))
             {
                 var user = userService.FindUser(login).MapUserDtoToModel();
-                var token = GenerateJwtToken(user);
+                var token = userService.GenerateJwtToken(user.MapUserModelToDto());
                 return Content(token);
             }
             return BadRequest(new { message = "Username or password is incorrect" });
-        }
-
-
-        public string GenerateJwtToken(UserModel userModel)
-        {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = new byte[32]; 
-            using (var generator = RandomNumberGenerator.Create())
-            {
-                generator.GetBytes(key);
-            }
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(new Claim[]
-                {
-            new Claim(ClaimTypes.Name, userModel.Login),
-                }),
-                Expires = DateTime.UtcNow.AddDays(7),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            };
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            return tokenHandler.WriteToken(token);
         }
 
     }

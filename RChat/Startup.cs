@@ -11,7 +11,6 @@ using RChat.BLL.Services;
 using RChat.DAL.Context;
 using RChat.DAL.Interfaces;
 using RChat.DAL.Repositories;
-using RChat.WEB.Tokens;
 using System.Text;
 
 namespace RChat
