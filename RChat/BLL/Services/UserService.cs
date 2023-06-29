@@ -133,16 +133,19 @@ namespace RChat.BLL.Services
             {
                 generator.GetBytes(key);
             }
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(new Claim[]
+
+            var token = new JwtSecurityToken(
+                issuer: "RChat",
+                audience: "audience",
+                notBefore: DateTime.UtcNow,
+                claims: new[]
                 {
             new Claim(ClaimTypes.Name, userDto.Login),
-                }),
-                Expires = DateTime.UtcNow.AddDays(7),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            };
-            var token = tokenHandler.CreateToken(tokenDescriptor);
+                },
+                expires: DateTime.UtcNow.AddDays(7),
+                signingCredentials: new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            ) ;
+
             return tokenHandler.WriteToken(token);
         }
     }

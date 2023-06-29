@@ -43,7 +43,7 @@ namespace RChat.WEB.Controllers
                 var token = userService.GenerateJwtToken(user.MapUserModelToDto());
                 return Content(token);
             }
-            return BadRequest(new { message = "Username or password is incorrect" });
+            return BadRequest(new { message = "Login or password is incorrect" });
         }
 
     }
