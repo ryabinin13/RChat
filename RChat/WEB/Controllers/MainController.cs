@@ -34,7 +34,7 @@ namespace RChat.WEB.Controllers
             return new ObjectResult(userService.FindUser(login).MapUserDtoToModel());
         }
 
-
+        [Authorize]
         [Route("AddChat")]
         [HttpPost]
         public void AddChat([FromBody] ChatModel chatModel)
@@ -42,7 +42,7 @@ namespace RChat.WEB.Controllers
             userService.CreateChat(chatModel.MapChatModelToDto());
         }
 
-
+        [Authorize]
         [Route("DeleteChat")]
         [HttpDelete]
         public void DeleteChat(int id)
@@ -50,6 +50,7 @@ namespace RChat.WEB.Controllers
             userService.DeleteChat(id);
         }
 
+        [Authorize]
         [Route("FindId")]
         [HttpGet]
         public IActionResult FindId(int id)
@@ -57,6 +58,7 @@ namespace RChat.WEB.Controllers
             return new ObjectResult(userService.FindUserId(id).MapUserDtoToModel());
         }
 
+        [Authorize]
         [Route("AddUser")]
         [HttpPost]
         public void AddUser(int userId, int chatId)
@@ -64,17 +66,28 @@ namespace RChat.WEB.Controllers
             userService.AddUser(userId, chatId);
         }
 
+        [Authorize]
         [Route("DeleteUser")]
         [HttpPost]
         public void DeleteUser(int userId, int chatId)
         {
             userService.DeleteUser(userId, chatId);
         }
+
+        [Authorize]
         [Route("SendMessage")]
         [HttpPost]
-        public void SendMessage(int userId, int chatId, string message)
+        public void SendMessage([FromBody] MessageModel messageModel)
         {
-            userService.SendMessage(userId, chatId, message);
+            userService.SendMessage(messageModel.MapMessageModelToDto());
+        }
+
+        [Authorize]
+        [Route("DeleteMessage")]
+        [HttpDelete]
+        public void DeleteMessage(int messageId)
+        {
+            userService.DeleteMessage(messageId);
         }
     }
 }

@@ -68,6 +68,26 @@ namespace RChat.Mappers
                 ChatId = chatModel.ChatId, Name = chatModel.Name, UsersId = chatModel.UsersId
             };
         }
+        public static MessageDto MapMessageModelToDto(this MessageModel messageModel)
+        {
+            if(messageModel == null)
+                return null;
+
+            return new MessageDto()
+            {
+                MessageId = messageModel.MessageId, Text = messageModel.Text, ChatId = messageModel.ChatId, UserId = messageModel.UserId, Date = messageModel.Date
+            };
+        }
+        public static MessageEntity MapMessageDtoToEntity(this MessageDto messageDto)
+        {
+            if (messageDto == null)
+                return null;
+
+            return new MessageEntity()
+            {
+                MessageId = messageDto.MessageId, Text = messageDto.Text, Date = messageDto.Date
+            };
+        }
 
         public static List<UserDto> MapUserListEntityToDto(this List<UserEntity> userEntities)
         {

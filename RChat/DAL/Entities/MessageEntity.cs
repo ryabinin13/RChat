@@ -11,5 +11,6 @@ namespace RChat.DAL.Entities
         public string Text { get; set; }
         public UserEntity UserEntity { get; set; }
         public ChatEntity ChatEntity { get; set; }
+        public DateTime Date { get; set; }
     }
 }

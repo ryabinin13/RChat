@@ -1,17 +1,15 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using RChat.BLL.Dto;
 using RChat.BLL.Interfaces;
+using RChat.BLL.JwtToken;
 using RChat.DAL.Entities;
 using RChat.DAL.Interfaces;
 using RChat.Mappers;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace RChat.BLL.Services
 {
@@ -74,9 +72,15 @@ namespace RChat.BLL.Services
             chatRepository.Delete(id);
         }
 
-        public void DeleteMessage(int id)
+        public void DeleteMessage(int messageId)
         {
-            throw new NotImplementedException();
+            var messageEntity = messageRepository.Get(messageId);
+            TimeSpan difference = DateTime.Now.Subtract(messageEntity.Date);
+            int differenceDays = (int)difference.TotalDays;
+            if (differenceDays <= 1)
+            {
+                messageRepository.Delete(messageId);
+            }
         }
 
         public List<UserDto> GetAllUser()
@@ -89,20 +93,16 @@ namespace RChat.BLL.Services
             userRepository.Create(userDto.MapUserDtoToEntity());
         }
 
-        int i = 0;
-        public void SendMessage(int userId, int chatId, string message)
-        {
-            i++;
-            var userEntity = userRepository.GetId(userId);
-            var chatEntity = chatRepository.Get(chatId);
 
-            MessageEntity messageEntity = new MessageEntity()
-            {
-                ChatEntity = chatEntity,
-                UserEntity = userEntity,
-                Text = message,
-                MessageId = i
-            };
+        public void SendMessage(MessageDto messageDto)
+        {
+            var userEntity = userRepository.GetId(messageDto.UserId);
+            var chatEntity = chatRepository.Get(messageDto.ChatId);
+
+            var messageEntity = messageDto.MapMessageDtoToEntity();
+            messageEntity.ChatEntity = chatEntity;
+            messageEntity.UserEntity = userEntity;
+
             messageRepository.Create(messageEntity);
         }
 
@@ -125,28 +125,26 @@ namespace RChat.BLL.Services
             chatRepository.Update(chatEntity);
         }
 
+
+
+
         public string GenerateJwtToken(UserDto userDto)
         {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = new byte[32];
-            using (var generator = RandomNumberGenerator.Create())
-            {
-                generator.GetBytes(key);
-            }
+            var now = DateTime.UtcNow;
 
-            var token = new JwtSecurityToken(
-                issuer: "RChat",
-                audience: "audience",
-                notBefore: DateTime.UtcNow,
-                claims: new[]
-                {
-            new Claim(ClaimTypes.Name, userDto.Login),
-                },
-                expires: DateTime.UtcNow.AddDays(7),
-                signingCredentials: new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            ) ;
+            var jwt = new JwtSecurityToken(
+                    issuer: AuthOptions.ISSUER,
+                    audience: AuthOptions.AUDIENCE,
+                    notBefore: now,
+                    claims: new List<Claim>()
+                    {
+                        new Claim(ClaimTypes.Name, userDto.Login)
+                    },
+                    expires: now.Add(TimeSpan.FromMinutes(AuthOptions.LIFETIME)),
+                    signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
+            var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
 
-            return tokenHandler.WriteToken(token);
+            return encodedJwt;
         }
     }
 }

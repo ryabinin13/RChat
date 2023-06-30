@@ -9,9 +9,8 @@ namespace RChat.WEB.Models
     {
         public int MessageId { get; set; }
         public string Text { get; set; }
-        public UserModel UserModel { get; set; }
-        public ChatModel chatModel { get; set; }
         public int ChatId { get; set; }
         public int UserId { get; set; }
+        public DateTime Date { get; set; } = DateTime.Now;
     }
 }

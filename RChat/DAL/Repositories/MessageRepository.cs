@@ -24,20 +24,17 @@ namespace RChat.DAL.Repositories
 
         public void Delete(int id)
         {
-            throw new NotImplementedException();
+            MessageEntity messageEntity = rc.Messages.Find(id);
+            rc.Messages.Remove(messageEntity);
+            rc.SaveChanges();
         }
 
-        public MessageEntity Get(string login)
+        public MessageEntity Get(int id)
         {
-            throw new NotImplementedException();
+            return rc.Messages.Find(id);
         }
 
         public List<MessageEntity> GetAll()
-        {
-            throw new NotImplementedException();
-        }
-
-        public MessageEntity GetId(int id)
         {
             throw new NotImplementedException();
         }

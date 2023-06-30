@@ -9,8 +9,7 @@ namespace RChat.DAL.Interfaces
     public interface IMessageRepository
     {
         List<MessageEntity> GetAll();
-        MessageEntity Get(string login);
-        MessageEntity GetId(int id);
+        MessageEntity Get(int id);
         void Create(MessageEntity item);
         void Delete(int id);
         void Update(MessageEntity item);
