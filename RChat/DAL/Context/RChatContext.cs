@@ -11,6 +11,7 @@ namespace RChat.DAL.Context
         public DbSet<UserEntity> Users { get; set; }
         public DbSet<ChatEntity> Chats { get; set; }
         public DbSet<MessageEntity> Messages { get; set; }
+        public DbSet<BotEntity> Bots { get; set; }
         public RChatContext()
         {
             Database.EnsureCreated();      
@@ -21,6 +22,7 @@ namespace RChat.DAL.Context
             modelBuilder.Entity<UserEntity>().HasAlternateKey(u => u.Login);
             modelBuilder.Entity<ChatEntity>().HasKey(c => c.ChatId);
             modelBuilder.Entity<MessageEntity>().HasKey(v => v.MessageId);
+            modelBuilder.Entity<BotEntity>().HasKey(k => k.BotId);
         }
         //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         //{

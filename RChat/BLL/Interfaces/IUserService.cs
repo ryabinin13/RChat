@@ -16,6 +16,8 @@ namespace RChat.BLL.Interfaces
         public UserDto FindUser(string login);
         public List<UserDto> GetAllUser();
         public UserDto FindUserId(int id);
+        public void AddBot(int chatId, int botId);
+        public void CreateBot(BotDto botDto);
         public string GenerateJwtToken(UserDto userDto);
     }
 }

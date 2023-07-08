@@ -88,6 +88,29 @@ namespace RChat.Mappers
                 MessageId = messageDto.MessageId, Text = messageDto.Text, Date = messageDto.Date
             };
         }
+        public static BotEntity MapBotDtoToEntity(this BotDto botDto)
+        {
+            if (botDto == null)
+                return null;
+
+            return new BotEntity()
+            {
+                BotId = botDto.BotId, Name = botDto.Name
+            };
+
+        }
+        public static BotDto MapBotModelToDto(this BotModel botModel)
+        {
+            if (botModel == null)
+                return null;
+
+            return new BotDto()
+            {
+                BotId = botModel.BotId,
+                Name = botModel.Name
+            };
+
+        }
 
         public static List<UserDto> MapUserListEntityToDto(this List<UserEntity> userEntities)
         {

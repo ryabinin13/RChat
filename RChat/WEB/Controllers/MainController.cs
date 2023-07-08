@@ -74,7 +74,7 @@ namespace RChat.WEB.Controllers
             userService.DeleteUser(userId, chatId);
         }
 
-        [Authorize]
+        //[Authorize]
         [Route("SendMessage")]
         [HttpPost]
         public void SendMessage([FromBody] MessageModel messageModel)
@@ -88,6 +88,20 @@ namespace RChat.WEB.Controllers
         public void DeleteMessage(int messageId)
         {
             userService.DeleteMessage(messageId);
+        }
+        [Authorize]
+        [Route("CreateBot")]
+        [HttpPost]
+        public void CreateBot([FromBody] BotModel botModel)
+        {
+            userService.CreateBot(botModel.MapBotModelToDto());
+        }
+        //[Authorize]
+        [Route("AddBot")]
+        [HttpPost]
+        public void AddBot(int chatId, int botId)
+        {
+            userService.AddBot(chatId, botId);
         }
     }
 }

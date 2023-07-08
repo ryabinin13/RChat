@@ -1,4 +1,5 @@
 ﻿using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json.Linq;
 using RChat.BLL.Dto;
 using RChat.BLL.Interfaces;
 using RChat.BLL.JwtToken;
@@ -8,6 +9,7 @@ using RChat.Mappers;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net.Http;
 using System.Security.Claims;
 
 
@@ -18,14 +20,14 @@ namespace RChat.BLL.Services
         private IUserRepository userRepository;
         private IChatRepository chatRepository;
         private IMessageRepository messageRepository;
-
-        public UserService(IUserRepository _userRepository, IChatRepository _chatRepository, IMessageRepository _messageRepository)
+        private IBotRepository botRepository;
+        public UserService(IUserRepository _userRepository, IChatRepository _chatRepository, IMessageRepository _messageRepository, IBotRepository _botRepository)
         {
             userRepository = _userRepository;
             chatRepository = _chatRepository;
             messageRepository = _messageRepository;
+            botRepository = _botRepository;
         }
-
         public void AddUser(int userId, int chatId)
         {
             UserEntity userEntity = userRepository.GetId(userId);
@@ -34,10 +36,6 @@ namespace RChat.BLL.Services
             chatEntity.UserEntities.Add(userEntity);
             chatRepository.Update(chatEntity);
         }
-
-       
-
-        
         public bool Authorization(string password, string login)
         {
             UserDto user = userRepository.Get(login).MapUserEntityToDto();
@@ -49,8 +47,6 @@ namespace RChat.BLL.Services
 
             return false;
         }
-
-
         public void CreateChat(ChatDto chatDto)
         {
             List<UserEntity> userEntities = new List<UserEntity>();
@@ -66,7 +62,6 @@ namespace RChat.BLL.Services
             chatRepository.Create(chat);
 
         }
-
         public void DeleteChat(int id)
         {
             chatRepository.Delete(id);
@@ -82,20 +77,18 @@ namespace RChat.BLL.Services
                 messageRepository.Delete(messageId);
             }
         }
-
         public List<UserDto> GetAllUser()
         {
             return userRepository.GetAll().MapUserListEntityToDto();
         }
-
         public void Registration(UserDto userDto)
         {
             userRepository.Create(userDto.MapUserDtoToEntity());
         }
-
-
         public void SendMessage(MessageDto messageDto)
         {
+
+
             var userEntity = userRepository.GetId(messageDto.UserId);
             var chatEntity = chatRepository.Get(messageDto.ChatId);
 
@@ -104,18 +97,36 @@ namespace RChat.BLL.Services
             messageEntity.UserEntity = userEntity;
 
             messageRepository.Create(messageEntity);
-        }
 
+            if (chatEntity.BotEntities != null)
+            {
+                foreach (var bot in chatEntity.BotEntities)
+                {
+                    if ((bot.Name == "weatherBot") & (messageDto.Text.Split(' ')[0] == "weatherBot"))
+                    {
+                        double temp = BotService.GetWeather(messageDto.Text.Split(' ')[1]);
+
+                        string tempWeather = $"температура в {messageDto.Text.Split(' ')[1]} = {temp-273}";
+
+                        MessageEntity messageBot = new MessageEntity() { Text= tempWeather, Date = DateTime.Now, MessageId = 
+                            messageDto.Text.Length * messageDto.Text.Split(' ')[1].Length - DateTime.Now.Millisecond, BotEntity = bot, ChatEntity = chatEntity };
+
+                        messageRepository.Create(messageBot);
+
+                    }
+                }
+            }
+
+            
+        }
         public UserDto FindUser(string login)
         {
             return userRepository.Get(login).MapUserEntityToDto();
         }
-
         public UserDto FindUserId(int id)
         {
             return userRepository.GetId(id).MapUserEntityToDto();
         }
-
         public void DeleteUser(int userId, int chatId)
         {
             UserEntity userEntity = userRepository.GetId(userId);
@@ -124,8 +135,28 @@ namespace RChat.BLL.Services
             chatEntity.UserEntities.Remove(userEntity);
             chatRepository.Update(chatEntity);
         }
+        public void CreateBot(BotDto botDto)
+        {
+            botRepository.Create(botDto.MapBotDtoToEntity());
+        }
+        public void AddBot(int chatId, int botId)
+        {
+            var chatEntity = chatRepository.Get(chatId);
+            var botEntity = botRepository.Get(botId);
 
+            if (chatEntity.BotEntities == null)
+            {
+                chatEntity.BotEntities = new List<BotEntity>() { botEntity };
+            }
+            else
+            {
+                chatEntity.BotEntities.Add(botEntity);
+            }
+            
+            chatRepository.Update(chatEntity);
+        }
 
+        
 
 
         public string GenerateJwtToken(UserDto userDto)
@@ -145,6 +176,6 @@ namespace RChat.BLL.Services
             var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
 
             return encodedJwt;
-        }
+        }  
     }
 }

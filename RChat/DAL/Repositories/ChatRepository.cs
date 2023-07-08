@@ -36,7 +36,7 @@ namespace RChat.DAL.Repositories
 
         public ChatEntity Get(int id)
         {
-            return rc.Chats.Include(c => c.UserEntities).First(c => c.ChatId == id);        
+            return rc.Chats.Include(c => c.UserEntities).Include(c => c.BotEntities).First(c => c.ChatId == id);        
         }
 
         public List<ChatEntity> GetAll()
