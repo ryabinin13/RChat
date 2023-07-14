@@ -7,7 +7,7 @@ namespace RChat.WEB.Models
 {
     public class MessageModel
     {
-        public int MessageId { get; set; }
+        public Guid MessageId { get; set; } = new Guid();
         public string Text { get; set; }
         public int ChatId { get; set; }
         public int UserId { get; set; }

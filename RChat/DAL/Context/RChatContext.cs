@@ -24,9 +24,6 @@ namespace RChat.DAL.Context
             modelBuilder.Entity<MessageEntity>().HasKey(v => v.MessageId);
             modelBuilder.Entity<BotEntity>().HasKey(k => k.BotId);
         }
-        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        //{
-        //    optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=RCHAT;Username=postgres;Password=stud");
-        //}
+        
     }
 }

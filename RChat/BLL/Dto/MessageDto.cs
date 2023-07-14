@@ -7,7 +7,7 @@ namespace RChat.BLL.Dto
 {
     public class MessageDto
     {
-        public int MessageId { get; set; }
+        public Guid MessageId { get; set; }
         public string Text { get; set; }
         public UserDto UserDto { get; set; }
         public ChatDto ChatDto { get; set; }

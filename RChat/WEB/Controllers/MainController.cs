@@ -82,6 +82,7 @@ namespace RChat.WEB.Controllers
             userService.SendMessage(messageModel.MapMessageModelToDto());
         }
 
+        
         [Authorize]
         [Route("DeleteMessage")]
         [HttpDelete]
@@ -96,7 +97,7 @@ namespace RChat.WEB.Controllers
         {
             userService.CreateBot(botModel.MapBotModelToDto());
         }
-        //[Authorize]
+        [Authorize]
         [Route("AddBot")]
         [HttpPost]
         public void AddBot(int chatId, int botId)

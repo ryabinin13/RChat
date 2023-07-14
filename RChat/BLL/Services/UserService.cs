@@ -1,5 +1,4 @@
 ﻿using Microsoft.IdentityModel.Tokens;
-using Newtonsoft.Json.Linq;
 using RChat.BLL.Dto;
 using RChat.BLL.Interfaces;
 using RChat.BLL.JwtToken;
@@ -9,7 +8,6 @@ using RChat.Mappers;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Net.Http;
 using System.Security.Claims;
 
 
@@ -67,6 +65,7 @@ namespace RChat.BLL.Services
             chatRepository.Delete(id);
         }
 
+        //TODO придумать реализацию удаления сообщения
         public void DeleteMessage(int messageId)
         {
             var messageEntity = messageRepository.Get(messageId);
@@ -87,8 +86,6 @@ namespace RChat.BLL.Services
         }
         public void SendMessage(MessageDto messageDto)
         {
-
-
             var userEntity = userRepository.GetId(messageDto.UserId);
             var chatEntity = chatRepository.Get(messageDto.ChatId);
 
@@ -109,7 +106,7 @@ namespace RChat.BLL.Services
                         string tempWeather = $"температура в {messageDto.Text.Split(' ')[1]} = {temp-273}";
 
                         MessageEntity messageBot = new MessageEntity() { Text= tempWeather, Date = DateTime.Now, MessageId = 
-                            messageDto.Text.Length * messageDto.Text.Split(' ')[1].Length - DateTime.Now.Millisecond, BotEntity = bot, ChatEntity = chatEntity };
+                            new Guid(), BotEntity = bot, ChatEntity = chatEntity };
 
                         messageRepository.Create(messageBot);
 

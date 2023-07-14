@@ -32,6 +32,7 @@ namespace RChat.DAL.Repositories
         public MessageEntity Get(int id)
         {
             return rc.Messages.Find(id);
+          
         }
 
         public List<MessageEntity> GetAll()
