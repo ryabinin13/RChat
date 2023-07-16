@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using RChat.BLL.Interfaces;
 using RChat.Mappers;
 using RChat.WEB.Models;
@@ -11,11 +12,14 @@ namespace RChat.WEB.Controllers
     [Route("[controller]")]
     public class MainController : ControllerBase
     {
+        private readonly ILogger<MainController> logger;
+
         private IUserService userService;
 
-        public MainController(IUserService _userService)
+        public MainController(IUserService _userService, ILogger<MainController> _logger)
         {
             userService = _userService;
+            logger = _logger;
         }
 
         [Authorize]
@@ -58,12 +62,12 @@ namespace RChat.WEB.Controllers
             return new ObjectResult(userService.FindUserId(id).MapUserDtoToModel());
         }
 
-        [Authorize]
+        //[Authorize]
         [Route("AddUser")]
         [HttpPost]
         public void AddUser(int userId, int chatId)
-        {
-            userService.AddUser(userId, chatId);
+        {          
+            userService.AddUser(userId, chatId);  
         }
 
         [Authorize]
@@ -80,6 +84,7 @@ namespace RChat.WEB.Controllers
         public void SendMessage([FromBody] MessageModel messageModel)
         {
             userService.SendMessage(messageModel.MapMessageModelToDto());
+            userService.BotGetMessage(messageModel.MapMessageModelToDto());
         }
 
         
@@ -103,6 +108,14 @@ namespace RChat.WEB.Controllers
         public void AddBot(int chatId, int botId)
         {
             userService.AddBot(chatId, botId);
+        }
+
+        //[Authorize]
+        [Route("GetAllMessages")]
+        [HttpGet]
+        public List<MessageModel> GetAllMessages(int chatId)
+        {
+            return userService.GetAllMessages(chatId).MapMessageListDtoToModel();
         }
     }
 }

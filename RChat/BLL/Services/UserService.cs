@@ -19,7 +19,8 @@ namespace RChat.BLL.Services
         private IChatRepository chatRepository;
         private IMessageRepository messageRepository;
         private IBotRepository botRepository;
-        public UserService(IUserRepository _userRepository, IChatRepository _chatRepository, IMessageRepository _messageRepository, IBotRepository _botRepository)
+        public UserService(IUserRepository _userRepository, IChatRepository _chatRepository, 
+                            IMessageRepository _messageRepository, IBotRepository _botRepository)
         {
             userRepository = _userRepository;
             chatRepository = _chatRepository;
@@ -30,6 +31,11 @@ namespace RChat.BLL.Services
         {
             UserEntity userEntity = userRepository.GetId(userId);
             ChatEntity chatEntity = chatRepository.Get(chatId);
+
+            if (userEntity == null)
+                throw new ArgumentException($"пользователя с id {userId} не существует");
+            if (chatEntity == null)
+                throw new ArgumentException($"чата с id {chatId} не существует");
 
             chatEntity.UserEntities.Add(userEntity);
             chatRepository.Update(chatEntity);
@@ -84,10 +90,47 @@ namespace RChat.BLL.Services
         {
             userRepository.Create(userDto.MapUserDtoToEntity());
         }
+
+        public void BotGetMessage(MessageDto messageDto)
+        {
+            var chatEntity = chatRepository.Get(messageDto.ChatId);
+
+            if (chatEntity.BotEntities != null)
+            {
+                return;
+            }
+
+            foreach (var bot in chatEntity.BotEntities)
+            {
+                if ((bot.Name == "weatherBot") & (messageDto.Text.Split(' ')[0] == "weatherBot"))
+                {
+                    double temp = BotService.GetWeather(messageDto.Text.Split(' ')[1]);
+                    string tempWeather = $"температура в {messageDto.Text.Split(' ')[1]} = {temp - 273}";
+
+                    MessageEntity messageBot = new MessageEntity()
+                    {
+                        Text = tempWeather,
+                        Date = DateTime.Now,
+                        MessageId =
+                        new Guid(),
+                        BotEntity = bot,
+                        ChatEntity = chatEntity
+                    };
+
+                    messageRepository.Create(messageBot);
+                }
+            }
+            
+        }
         public void SendMessage(MessageDto messageDto)
         {
             var userEntity = userRepository.GetId(messageDto.UserId);
             var chatEntity = chatRepository.Get(messageDto.ChatId);
+
+            if (userEntity == null)
+                throw new ArgumentException($"пользователя с id {messageDto.UserId} не существует");
+            if (chatEntity == null)
+                throw new ArgumentException($"чата с id {messageDto.ChatId} не существует");
 
             var messageEntity = messageDto.MapMessageDtoToEntity();
             messageEntity.ChatEntity = chatEntity;
@@ -95,26 +138,6 @@ namespace RChat.BLL.Services
 
             messageRepository.Create(messageEntity);
 
-            if (chatEntity.BotEntities != null)
-            {
-                foreach (var bot in chatEntity.BotEntities)
-                {
-                    if ((bot.Name == "weatherBot") & (messageDto.Text.Split(' ')[0] == "weatherBot"))
-                    {
-                        double temp = BotService.GetWeather(messageDto.Text.Split(' ')[1]);
-
-                        string tempWeather = $"температура в {messageDto.Text.Split(' ')[1]} = {temp-273}";
-
-                        MessageEntity messageBot = new MessageEntity() { Text= tempWeather, Date = DateTime.Now, MessageId = 
-                            new Guid(), BotEntity = bot, ChatEntity = chatEntity };
-
-                        messageRepository.Create(messageBot);
-
-                    }
-                }
-            }
-
-            
         }
         public UserDto FindUser(string login)
         {
@@ -129,6 +152,11 @@ namespace RChat.BLL.Services
             UserEntity userEntity = userRepository.GetId(userId);
             ChatEntity chatEntity = chatRepository.Get(chatId);
 
+            if (userEntity == null)
+                throw new ArgumentException($"пользователя с id {userId} не существует");
+            if (chatEntity == null)
+                throw new ArgumentException($"чата с id {chatId} не существует");
+
             chatEntity.UserEntities.Remove(userEntity);
             chatRepository.Update(chatEntity);
         }
@@ -136,24 +164,33 @@ namespace RChat.BLL.Services
         {
             botRepository.Create(botDto.MapBotDtoToEntity());
         }
+
         public void AddBot(int chatId, int botId)
         {
             var chatEntity = chatRepository.Get(chatId);
             var botEntity = botRepository.Get(botId);
 
+            if (botEntity == null)
+                throw new ArgumentException($"бота с id {botId} не существует");
+            if (chatEntity == null)
+                throw new ArgumentException($"чата с id {chatId} не существует");
+
             if (chatEntity.BotEntities == null)
-            {
-                chatEntity.BotEntities = new List<BotEntity>() { botEntity };
-            }
+                chatEntity.BotEntities = new List<BotEntity>() { botEntity };           
             else
-            {
                 chatEntity.BotEntities.Add(botEntity);
-            }
             
             chatRepository.Update(chatEntity);
         }
 
-        
+        public List<MessageDto> GetAllMessages(int chatId)
+        {
+            var chatEntity = chatRepository.Get(chatId);
+            if (chatEntity == null)
+                throw new ArgumentException($"чата с id {chatId} не существует");
+
+            return chatEntity.MessageEntities.MapMessageListEntityToDto();
+        }
 
 
         public string GenerateJwtToken(UserDto userDto)
@@ -173,6 +210,8 @@ namespace RChat.BLL.Services
             var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
 
             return encodedJwt;
-        }  
+        }
+
+        
     }
 }

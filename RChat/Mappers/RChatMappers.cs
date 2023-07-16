@@ -7,6 +7,7 @@ namespace RChat.Mappers
 {
     public static class RChatMappers
     {
+        // USER_MAPPERS
         public static UserDto MapUserEntityToDto(this UserEntity userEntity)
         {
             if (userEntity == null)
@@ -26,8 +27,7 @@ namespace RChat.Mappers
             { 
                 UserId = userDto.UserId, Name = userDto.Name, Login = userDto.Login, Password = userDto.Password 
             };            
-        }
-        
+        }      
         public static UserDto MapUserModelToDto(this UserModel userModel)
         {
             if (userModel == null)
@@ -48,6 +48,9 @@ namespace RChat.Mappers
                 UserId = userDto.UserId, Name = userDto.Name, Login = userDto.Login, Password = userDto.Password
             };
         }
+
+        //CHAT_MAPPERS
+
         public static ChatEntity MapChatDtoToEntity(this ChatDto chatDto)
         {
             if (chatDto == null)
@@ -68,6 +71,9 @@ namespace RChat.Mappers
                 ChatId = chatModel.ChatId, Name = chatModel.Name, UsersId = chatModel.UsersId
             };
         }
+
+        //MESSAGE_MAPPERS
+
         public static MessageDto MapMessageModelToDto(this MessageModel messageModel)
         {
             if(messageModel == null)
@@ -76,6 +82,20 @@ namespace RChat.Mappers
             return new MessageDto()
             {
                 MessageId = messageModel.MessageId, Text = messageModel.Text, ChatId = messageModel.ChatId, UserId = messageModel.UserId, Date = messageModel.Date
+            };
+        }
+        public static MessageModel MapMessageDtoToModel(this MessageDto messageDto)
+        {
+            if (messageDto == null)
+                return null;
+
+            return new MessageModel()
+            {
+                MessageId = messageDto.MessageId,
+                Text = messageDto.Text,
+                ChatId = messageDto.ChatId,
+                UserId = messageDto.UserId,
+                Date = messageDto.Date
             };
         }
         public static MessageEntity MapMessageDtoToEntity(this MessageDto messageDto)
@@ -88,6 +108,21 @@ namespace RChat.Mappers
                 MessageId = messageDto.MessageId, Text = messageDto.Text, Date = messageDto.Date
             };
         }
+        public static MessageDto MapMessageEntityToDto(this MessageEntity messageEntity)
+        {
+            if (messageEntity == null)
+                return null;
+
+            return new MessageDto()
+            {
+                MessageId = messageEntity.MessageId,
+                Text = messageEntity.Text,
+                Date = messageEntity.Date
+            };
+        }
+
+        //BOT_MAPPERS
+
         public static BotEntity MapBotDtoToEntity(this BotDto botDto)
         {
             if (botDto == null)
@@ -112,6 +147,8 @@ namespace RChat.Mappers
 
         }
 
+        //LIST_USER_MAPPERS
+
         public static List<UserDto> MapUserListEntityToDto(this List<UserEntity> userEntities)
         {
             List<UserDto> userDtos = new List<UserDto>();
@@ -129,6 +166,27 @@ namespace RChat.Mappers
                 userModels.Add(item.MapUserDtoToModel());
             }
             return userModels;
+        }
+
+        //LIST_MESSAGE_MAPPERS
+
+        public static List<MessageDto> MapMessageListEntityToDto(this List<MessageEntity> messageEntities)
+        {
+            List<MessageDto> messageDtos = new List<MessageDto>();
+            foreach (var item in messageEntities)
+            {
+                messageDtos.Add(item.MapMessageEntityToDto());
+            }
+            return messageDtos;
+        }
+        public static List<MessageModel> MapMessageListDtoToModel(this List<MessageDto> messageDtos)
+        {
+            List<MessageModel> messageModels = new List<MessageModel>();
+            foreach (var item in messageDtos)
+            {
+                messageModels.Add(item.MapMessageDtoToModel());
+            }
+            return messageModels;
         }
     }
 }

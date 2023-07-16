@@ -18,6 +18,8 @@ namespace RChat.BLL.Interfaces
         public UserDto FindUserId(int id);
         public void AddBot(int chatId, int botId);
         public void CreateBot(BotDto botDto);
+        public void BotGetMessage(MessageDto messageDto);
+        public List<MessageDto> GetAllMessages(int chatId);
         public string GenerateJwtToken(UserDto userDto);
     }
 }

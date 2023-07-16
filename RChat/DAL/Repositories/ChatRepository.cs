@@ -2,10 +2,8 @@
 using RChat.DAL.Context;
 using RChat.DAL.Entities;
 using RChat.DAL.Interfaces;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace RChat.DAL.Repositories
 {
@@ -36,7 +34,7 @@ namespace RChat.DAL.Repositories
 
         public ChatEntity Get(int id)
         {
-            return rc.Chats.Include(c => c.UserEntities).Include(c => c.BotEntities).First(c => c.ChatId == id);        
+            return rc.Chats.Include(c => c.UserEntities).Include(c => c.BotEntities).Include(c=> c.MessageEntities).FirstOrDefault(c => c.ChatId == id);        
         }
 
         public List<ChatEntity> GetAll()

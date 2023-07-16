@@ -2,10 +2,8 @@
 using RChat.DAL.Context;
 using RChat.DAL.Entities;
 using RChat.DAL.Interfaces;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace RChat.DAL.Repositories
 {
@@ -25,22 +23,25 @@ namespace RChat.DAL.Repositories
 
         public void Delete(int id)
         {
-            throw new NotImplementedException();
+            BotEntity botEntity = rc.Bots.Find(id);
+            rc.Bots.Remove(botEntity);
+            rc.SaveChanges();
         }
 
         public BotEntity Get(int id)
         {
-            return rc.Bots.Include(c => c.ChatEntities).First(c => c.BotId == id);
+            return rc.Bots.Include(c => c.ChatEntities).Include(c => c.MessageEntities).FirstOrDefault(c => c.BotId == id);
         }
 
         public List<BotEntity> GetAll()
         {
-            throw new NotImplementedException();
+            return rc.Bots.ToList();
         }
 
         public void Update(BotEntity item)
         {
-            throw new NotImplementedException();
+            rc.Bots.Update(item);
+            rc.SaveChanges();
         }
     }
 }

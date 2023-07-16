@@ -2,10 +2,8 @@
 using RChat.DAL.Context;
 using RChat.DAL.Entities;
 using RChat.DAL.Interfaces;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace RChat.DAL.Repositories
 {
@@ -25,21 +23,19 @@ namespace RChat.DAL.Repositories
 
         public void Delete(int id)
         {
-            throw new NotImplementedException();
+            var userEntity = rc.Users.Find(id);
+            rc.Users.Remove(userEntity);
+            rc.SaveChanges();
         }
 
         public UserEntity Get(string login)
-        {
-            
+        {            
             return rc.Users.SingleOrDefault(u => u.Login == login);
-
         }
 
         public List<UserEntity> GetAll()
-        {
-            
-            return rc.Users.ToList();
-            
+        {        
+            return rc.Users.ToList();  
         }
 
         public void Update(UserEntity item)
@@ -49,11 +45,8 @@ namespace RChat.DAL.Repositories
         }
 
         public UserEntity GetId(int id)
-        {
-            
-            return rc.Users.Include(c => c.ChatEntities).First(c => c.UserId == id);
-            //return rc.Users.Find(id);
-            
+        {           
+            return rc.Users.Include(c => c.ChatEntities).Include(c => c.MessageEntities).FirstOrDefault(c => c.UserId == id);             
         }
     }
 }

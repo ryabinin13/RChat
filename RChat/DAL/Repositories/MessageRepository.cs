@@ -1,10 +1,9 @@
-﻿using RChat.DAL.Context;
+﻿using Microsoft.EntityFrameworkCore;
+using RChat.DAL.Context;
 using RChat.DAL.Entities;
 using RChat.DAL.Interfaces;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace RChat.DAL.Repositories
 {
@@ -31,18 +30,18 @@ namespace RChat.DAL.Repositories
 
         public MessageEntity Get(int id)
         {
-            return rc.Messages.Find(id);
-          
+            return rc.Messages.Include(c=> c.BotEntity).Include(c => c.ChatEntity).Include(c => c.UserEntity).FirstOrDefault();          
         }
 
         public List<MessageEntity> GetAll()
         {
-            throw new NotImplementedException();
+            return rc.Messages.ToList();
         }
 
         public void Update(MessageEntity item)
         {
-            throw new NotImplementedException();
+            rc.Messages.Update(item);
+            rc.SaveChanges();
         }
     }
 }
