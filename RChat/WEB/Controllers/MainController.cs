@@ -15,10 +15,12 @@ namespace RChat.WEB.Controllers
         private readonly ILogger<MainController> logger;
 
         private IUserService userService;
+        private IBotService botService;
 
-        public MainController(IUserService _userService, ILogger<MainController> _logger)
+        public MainController(IUserService _userService, IBotService _botService, ILogger<MainController> _logger)
         {
             userService = _userService;
+            botService = _botService;
             logger = _logger;
         }
 
@@ -84,7 +86,7 @@ namespace RChat.WEB.Controllers
         public void SendMessage([FromBody] MessageModel messageModel)
         {
             userService.SendMessage(messageModel.MapMessageModelToDto());
-            userService.BotGetMessage(messageModel.MapMessageModelToDto());
+            botService.SendMessageToBot(messageModel.MapMessageModelToDto());
         }
 
         
@@ -95,13 +97,8 @@ namespace RChat.WEB.Controllers
         {
             userService.DeleteMessage(messageId);
         }
-        [Authorize]
-        [Route("CreateBot")]
-        [HttpPost]
-        public void CreateBot([FromBody] BotModel botModel)
-        {
-            userService.CreateBot(botModel.MapBotModelToDto());
-        }
+        
+
         [Authorize]
         [Route("AddBot")]
         [HttpPost]

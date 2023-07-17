@@ -36,6 +36,7 @@ namespace RChat
             services.AddTransient<IMessageRepository, MessageRepository>();
             services.AddTransient<IBotRepository, BotRepository>();
             services.AddTransient<IUserService, UserService>();
+            services.AddTransient<IBotService, BotService>();
 
             services.AddDbContext<RChatContext>(options =>
      options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));

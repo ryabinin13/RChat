@@ -1,4 +1,5 @@
-﻿using RChat.BLL.Dto;
+﻿using RChat.BLL.Bots;
+using RChat.BLL.Dto;
 using RChat.DAL.Entities;
 using RChat.WEB.Models;
 using System.Collections.Generic;
@@ -139,12 +140,31 @@ namespace RChat.Mappers
             if (botModel == null)
                 return null;
 
-            return new BotDto()
+            if (botModel.Name == "weatherBot")
             {
-                BotId = botModel.BotId,
-                Name = botModel.Name
-            };
+                return new WeatherBot()
+                {
+                    BotId = botModel.BotId,
+                    Name = botModel.Name
+                };
+            }
+            return null;
 
+        }
+        public static BotDto MapBotEntityToDto(this BotEntity botEntity)
+        {
+            if (botEntity == null)
+                return null;
+
+            if (botEntity.Name == "weatherBot")
+            {
+                return new WeatherBot()
+                {
+                    BotId = botEntity.BotId,
+                    Name = botEntity.Name
+                };
+            }
+            return null;
         }
 
         //LIST_USER_MAPPERS
@@ -187,6 +207,18 @@ namespace RChat.Mappers
                 messageModels.Add(item.MapMessageDtoToModel());
             }
             return messageModels;
+        }
+
+        //LIST_BOT_MAPPERS
+
+        public static List<BotDto> MapDtoListEntityToDto(this List<BotEntity> botEntities)
+        {
+            List<BotDto> botDtos = new List<BotDto>();
+            foreach (var item in botEntities)
+            {
+                botDtos.Add(item.MapBotEntityToDto());
+            }
+            return botDtos;
         }
     }
 }

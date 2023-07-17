@@ -90,38 +90,7 @@ namespace RChat.BLL.Services
         {
             userRepository.Create(userDto.MapUserDtoToEntity());
         }
-
-        public void BotGetMessage(MessageDto messageDto)
-        {
-            var chatEntity = chatRepository.Get(messageDto.ChatId);
-
-            if (chatEntity.BotEntities != null)
-            {
-                return;
-            }
-
-            foreach (var bot in chatEntity.BotEntities)
-            {
-                if ((bot.Name == "weatherBot") & (messageDto.Text.Split(' ')[0] == "weatherBot"))
-                {
-                    double temp = BotService.GetWeather(messageDto.Text.Split(' ')[1]);
-                    string tempWeather = $"температура в {messageDto.Text.Split(' ')[1]} = {temp - 273}";
-
-                    MessageEntity messageBot = new MessageEntity()
-                    {
-                        Text = tempWeather,
-                        Date = DateTime.Now,
-                        MessageId =
-                        new Guid(),
-                        BotEntity = bot,
-                        ChatEntity = chatEntity
-                    };
-
-                    messageRepository.Create(messageBot);
-                }
-            }
-            
-        }
+        
         public void SendMessage(MessageDto messageDto)
         {
             var userEntity = userRepository.GetId(messageDto.UserId);
@@ -159,10 +128,6 @@ namespace RChat.BLL.Services
 
             chatEntity.UserEntities.Remove(userEntity);
             chatRepository.Update(chatEntity);
-        }
-        public void CreateBot(BotDto botDto)
-        {
-            botRepository.Create(botDto.MapBotDtoToEntity());
         }
 
         public void AddBot(int chatId, int botId)

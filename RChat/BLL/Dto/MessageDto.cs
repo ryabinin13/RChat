@@ -11,6 +11,8 @@ namespace RChat.BLL.Dto
         public string Text { get; set; }
         public UserDto UserDto { get; set; }
         public ChatDto ChatDto { get; set; }
+        public BotDto BotDto { get; set; }
+        public int BotId { get; set; }
         public int ChatId { get; set; }
         public int UserId { get; set; }
         public DateTime Date { get; set; }
