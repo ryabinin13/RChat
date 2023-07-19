@@ -2,6 +2,7 @@
 using RChat.DAL.Context;
 using RChat.DAL.Entities;
 using RChat.DAL.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -21,16 +22,16 @@ namespace RChat.DAL.Repositories
             rc.SaveChanges();
         }
 
-        public void Delete(int id)
+        public void Delete(Guid id)
         {
             MessageEntity messageEntity = rc.Messages.Find(id);
             rc.Messages.Remove(messageEntity);
             rc.SaveChanges();
         }
 
-        public MessageEntity Get(int id)
+        public MessageEntity Get(Guid id)
         {
-            return rc.Messages.Include(c=> c.BotEntity).Include(c => c.ChatEntity).Include(c => c.UserEntity).FirstOrDefault();          
+            return rc.Messages.Include(c=> c.BotEntity).Include(c => c.ChatEntity).Include(c => c.UserEntity).FirstOrDefault(c => c.MessageId == id);          
         }
 
         public List<MessageEntity> GetAll()

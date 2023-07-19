@@ -1,4 +1,5 @@
 ﻿using RChat.BLL.Dto;
+using System;
 using System.Collections.Generic;
 
 namespace RChat.BLL.Interfaces
@@ -6,7 +7,7 @@ namespace RChat.BLL.Interfaces
     public interface IUserService
     {
         public void SendMessage(MessageDto messageDto);
-        public void DeleteMessage(int messageId);
+        public void DeleteMessage(Guid messageId);
         public void Registration(UserDto userDto);
         public bool Authorization(string password, string login);
         public void CreateChat(ChatDto chatDto);

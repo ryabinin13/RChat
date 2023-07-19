@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using RChat.BLL.Interfaces;
 using RChat.Mappers;
 using RChat.WEB.Models;
+using System;
 using System.Collections.Generic;
 
 namespace RChat.WEB.Controllers
@@ -86,20 +87,28 @@ namespace RChat.WEB.Controllers
         public void SendMessage([FromBody] MessageModel messageModel)
         {
             userService.SendMessage(messageModel.MapMessageModelToDto());
-            botService.SendMessageToBot(messageModel.MapMessageModelToDto());
+            try
+            {               
+                botService.SendMessageToBot(messageModel.MapMessageModelToDto());
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "неверный текст для бота");
+            }
+            
         }
 
         
-        [Authorize]
+        //[Authorize]
         [Route("DeleteMessage")]
         [HttpDelete]
-        public void DeleteMessage(int messageId)
+        public void DeleteMessage(Guid messageId)
         {
             userService.DeleteMessage(messageId);
         }
         
 
-        [Authorize]
+        //[Authorize]
         [Route("AddBot")]
         [HttpPost]
         public void AddBot(int chatId, int botId)

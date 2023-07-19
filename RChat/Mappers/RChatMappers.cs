@@ -148,6 +148,14 @@ namespace RChat.Mappers
                     Name = botModel.Name
                 };
             }
+            if (botModel.Name == "factBot")
+            {
+                return new FactBot()
+                {
+                    BotId = botModel.BotId,
+                    Name = botModel.Name
+                };
+            }
             return null;
 
         }
@@ -159,6 +167,14 @@ namespace RChat.Mappers
             if (botEntity.Name == "weatherBot")
             {
                 return new WeatherBot()
+                {
+                    BotId = botEntity.BotId,
+                    Name = botEntity.Name
+                };
+            }
+            if (botEntity.Name == "factBot")
+            {
+                return new FactBot()
                 {
                     BotId = botEntity.BotId,
                     Name = botEntity.Name

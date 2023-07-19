@@ -71,8 +71,7 @@ namespace RChat.BLL.Services
             chatRepository.Delete(id);
         }
 
-        //TODO придумать реализацию удаления сообщения
-        public void DeleteMessage(int messageId)
+        public void DeleteMessage(Guid messageId)
         {
             var messageEntity = messageRepository.Get(messageId);
             TimeSpan difference = DateTime.Now.Subtract(messageEntity.Date);

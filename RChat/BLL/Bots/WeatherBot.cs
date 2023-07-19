@@ -28,7 +28,8 @@ namespace RChat.BLL.Bots
             JObject json = JObject.Parse(responseBody);
             double temperature = (double)json["main"]["temp"];
 
-            return new MessageDto() { BotId = this.BotId, Date = DateTime.Now, Text = $"температура в {city} = {temperature - 273}", MessageId = new Guid(), ChatId = messageDto.ChatId};
+            return new MessageDto() { BotId = this.BotId, Date = DateTime.Now, Text = $"температура в {city} = " +
+                $"{temperature - 273}", MessageId = new Guid(), ChatId = messageDto.ChatId};
         }
     }
 }
