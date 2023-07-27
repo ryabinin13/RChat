@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace RChat.BLL.Interfaces
 {
-    public interface IBotService
+    public interface IBotManager
     {
-        public void SendMessageToBot(MessageDto messageDto);
-        public void SendMessage(MessageDto messageDto);
+        public void AddMessages(MessageDto messageDto);
+        
     }
 }

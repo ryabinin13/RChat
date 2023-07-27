@@ -8,6 +8,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using RChat.Mappers;
+using RChat.BLL.Managers;
 
 namespace RChat.BLL.Services
 {
@@ -17,6 +18,7 @@ namespace RChat.BLL.Services
         private IChatRepository chatRepository;
         private IMessageRepository messageRepository;
         private IBotRepository botRepository;
+        //private IBotManager botManager;
         public BotService(IUserRepository _userRepository, IChatRepository _chatRepository,
                             IMessageRepository _messageRepository, IBotRepository _botRepository)
         {
@@ -24,10 +26,10 @@ namespace RChat.BLL.Services
             chatRepository = _chatRepository;
             messageRepository = _messageRepository;
             botRepository = _botRepository;
+            //botManager = _botManager;
         }
         public void SendMessageToBot(MessageDto messageDto)
         {
-
             var chatEntity = chatRepository.Get(messageDto.ChatId);
 
             if (chatEntity == null)
@@ -35,16 +37,7 @@ namespace RChat.BLL.Services
             if (chatEntity.BotEntities == null)
                 return;
 
-            List<BotDto> botDtos = chatEntity.BotEntities.MapDtoListEntityToDto();
-
-            foreach (var bot in botDtos)
-            {
-                if (messageDto.Text.Split(' ')[0] == bot.Name)
-                {
-                    var message = bot.SendMessage(messageDto);
-                    SendMessage(message);
-                }
-            }
+            //botManager.AddMessages(messageDto);
         }
         public void SendMessage(MessageDto messageDto)
         {         

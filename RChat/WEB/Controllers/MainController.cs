@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using RChat.BLL.Interfaces;
+using RChat.BLL.Managers;
 using RChat.Mappers;
 using RChat.WEB.Models;
 using System;
@@ -17,12 +18,14 @@ namespace RChat.WEB.Controllers
 
         private IUserService userService;
         private IBotService botService;
+        private IBotManager botManager;
 
-        public MainController(IUserService _userService, IBotService _botService, ILogger<MainController> _logger)
+        public MainController(IUserService _userService, IBotService _botService, ILogger<MainController> _logger, IBotManager _botManager)
         {
             userService = _userService;
             botService = _botService;
             logger = _logger;
+            botManager = _botManager;
         }
 
         [Authorize]
@@ -88,17 +91,16 @@ namespace RChat.WEB.Controllers
         {
             userService.SendMessage(messageModel.MapMessageModelToDto());
             try
-            {               
-                botService.SendMessageToBot(messageModel.MapMessageModelToDto());
+            {
+                botManager.AddMessages(messageModel.MapMessageModelToDto());
+                //botService.SendMessageToBot(messageModel.MapMessageModelToDto());
             }
             catch (Exception e)
             {
                 logger.LogError(e, "неверный текст для бота");
             }
             
-        }
-
-        
+        }       
         //[Authorize]
         [Route("DeleteMessage")]
         [HttpDelete]

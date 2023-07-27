@@ -9,6 +9,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using RChat.BLL.Interfaces;
 using RChat.BLL.JwtToken;
+using RChat.BLL.Managers;
 using RChat.BLL.Services;
 using RChat.DAL.Context;
 using RChat.DAL.Interfaces;
@@ -28,9 +29,8 @@ namespace RChat
 
         public void ConfigureServices(IServiceCollection services)
         {
-            
 
-            //services.AddTransient<IUserRepository, UserRepositoryTest>();
+            services.AddSingleton<IBotManager, BotManager>();
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<IChatRepository, ChatRepository>();
             services.AddTransient<IMessageRepository, MessageRepository>();
@@ -87,17 +87,6 @@ namespace RChat
 
             app.UseEndpoints(endpoints =>
             {
-                /*endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}"
-                    );
-                */
-                /*
-                endpoints.MapGet("/", async context =>
-                {
-                    await context.Response.WriteAsync("Hello World!");
-                });
-                */
                 app.UseEndpoints(endpoints =>
                 {
                     endpoints.MapControllers();
