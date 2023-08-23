@@ -30,13 +30,17 @@ namespace RChat
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddSingleton<IBotManager, BotManager>();
+            services.AddSingleton<IBotManager, BotManager>(serviceProvider =>
+            {
+                return  new BotManager(serviceProvider);       
+            });
+            services.AddScoped<IBotService, BotService>();
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<IChatRepository, ChatRepository>();
             services.AddTransient<IMessageRepository, MessageRepository>();
             services.AddTransient<IBotRepository, BotRepository>();
             services.AddTransient<IUserService, UserService>();
-            services.AddTransient<IBotService, BotService>();
+            
 
             services.AddDbContext<RChatContext>(options =>
      options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));

@@ -93,7 +93,6 @@ namespace RChat.WEB.Controllers
             try
             {
                 botManager.AddMessages(messageModel.MapMessageModelToDto());
-                //botService.SendMessageToBot(messageModel.MapMessageModelToDto());
             }
             catch (Exception e)
             {

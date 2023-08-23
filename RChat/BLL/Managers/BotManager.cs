@@ -16,13 +16,15 @@ namespace RChat.BLL.Managers
     {
         private Queue<MessageDto> messages;
         public List<BotDto> Bots { get; set; }
+        private IServiceProvider serviceProvider;
 
         //TODO ошибка singelton не может зависеть от transient
-        private IBotService botService;
-        public BotManager(IBotService _botService)
+        //private IBotService botService;
+        public BotManager(IServiceProvider _serviceProvider)
         {
             messages = new Queue<MessageDto>();
-            botService = _botService;
+            serviceProvider = _serviceProvider;
+            //botService = _botService;
             WeatherBot weatherBot = new WeatherBot();
             FactBot factBot = new FactBot();
             Bots = new List<BotDto>() { weatherBot, factBot };
@@ -45,7 +47,11 @@ namespace RChat.BLL.Managers
                         if (messageDto.Text.Split(' ')[0] == bot.Name)
                         {
                             var message = bot.SendMessage(messageDto);
-                            botService.SendMessage(message);
+                            var botService = serviceProvider.GetService(typeof(IBotService)) as IBotService;
+                            if (botService != null)
+                            {
+                                botService.SendMessage(message);
+                            }
                         }
                     }
                 }
